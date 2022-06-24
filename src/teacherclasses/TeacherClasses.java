@@ -5,6 +5,7 @@
 package teacherclasses;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,7 +19,21 @@ public class TeacherClasses {
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
         Data data = Data.readDataFromFile();
-        
+        GeneticAlgorithmImplementer Ga = new GeneticAlgorithmImplementer(data);
+        ArrayList<Solution> result = Ga.implementGA();
+        for (Solution solution : result) {
+            System.out.println(solution.all_Courses_Contraints);
+            System.out.println(solution.single_Teacher_Courses_Contraints);
+            System.out.println(solution.single_Slot_Contraints);
+            System.out.println(solution.inRange_Slot_Contraints);
+            System.out.println(solution.student_Rating_Constraint);
+            System.out.println(solution.self_Rating_Constraint);
+            System.out.println(solution.slot_Rating_Constraint);
+
+            System.out.println(solution.sum);
+            System.out.println(solution.cal_Fitness(data));
+        }
+        GeneticAlgorithmImplementer.writeSolutionAsTimetable(result.get(result.size()-1), data);
     }
-    
+
 }

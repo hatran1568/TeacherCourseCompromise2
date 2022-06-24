@@ -12,6 +12,7 @@ public class Course {
     private int id;
     private String classes;
     private int subject;
+    private String subjectName;
     private int slot;
     private String room;
 
@@ -53,6 +54,14 @@ public class Course {
 
     public void setRoom(String room) {
         this.room = room;
+    }
+
+    public String getSubjectName() {
+        return subjectName;
+    }
+
+    public void setSubjectName(String subjectName) {
+        this.subjectName = subjectName;
     }
     
     

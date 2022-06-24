@@ -53,6 +53,8 @@ public class Data {
         data.w4 = 1;
         data.w5 = 1;
         data.w6 = 1;
+        data.c1=1;
+        data.c2 =1;
 
         String workingDirectory = System.getProperty("user.dir");
         String excelFilePath = workingDirectory + "//data//data_T.xlsx";
@@ -76,11 +78,11 @@ public class Data {
         excelFilePath = workingDirectory + "//data//data_FSlot_S.xlsx";
         inputStream = new FileInputStream(new File(excelFilePath));
         workbook = new XSSFWorkbook(inputStream);
-        sheet = (Sheet) workbook.getSheetAt(0);
+        sheet = (Sheet) workbook.getSheetAt(1);
 
         for (int i = 0; i < data.N; i++) {
             for (int j = 0; j < data.L; j++) {
-                data.FSlot[i][j] = sheet.getRow(i + 1).getCell(j + 1).getNumericCellValue();
+                data.FSub[i][j] = sheet.getRow(i + 1).getCell(j + 1).getNumericCellValue();
             }
         }
 
@@ -114,6 +116,7 @@ public class Data {
             Course c = new Course();
             c.setId(i - 1);
             c.setClasses(sheet.getRow(i).getCell(1).toString());
+            c.setSubjectName(sheet.getRow(i).getCell(2).toString());
             c.setSubject((int) sheet.getRow(i).getCell(3).getNumericCellValue());
             c.setSlot((int) sheet.getRow(i).getCell(5).getNumericCellValue());
             c.setRoom(sheet.getRow(i).getCell(7).toString());
