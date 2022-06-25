@@ -34,6 +34,8 @@ public class TeacherClasses {
             System.out.println(solution.cal_Fitness(data));
         }
         GeneticAlgorithmImplementer.writeSolutionAsTimetable(result.get(result.size()-1), data);
+        GeneticAlgorithmImplementer.writeErrCourseToExcel(result.get(result.size()-1), data);
+        GeneticAlgorithmImplementer.writeSolution(result, data);
     }
 
 }

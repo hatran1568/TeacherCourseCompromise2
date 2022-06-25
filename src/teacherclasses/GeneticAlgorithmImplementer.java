@@ -164,27 +164,39 @@ public class GeneticAlgorithmImplementer {
         
         Row row = sheet.createRow(0);
         Cell cell = row.createCell(0);
-        cell.setCellValue("Course id");
+        cell.setCellValue("Fitness");
         
-        cell = row.createCell(1);
-        cell.setCellValue("class");
+       
         
-        cell = row.createCell(2);
-        cell.setCellValue("subject id");
-        
-        cell = row.createCell(3);
-        cell.setCellValue("slot id");
-        
-        cell = row.createCell(4);
-        cell.setCellValue("room");
-        
-        cell = row.createCell(5);
-        cell.setCellValue("teacher id");
-        
-        for (int i = 0; i < data.M; i++){
+        int rowCount = 0;
+
+        for (Solution s : solutions){
+            row = sheet.createRow(++rowCount);
+            cell = row.createCell(0);
+            cell.setCellValue(s.cal_Fitness(data));
+
             
         }
-        
+        try ( FileOutputStream outputStream = new FileOutputStream("Fitness.xlsx")) {
+            workbook.write(outputStream);
+            outputStream.close();
+        }
+    }
+    
+    public static void writeErrCourseToExcel(Solution solution, Data data) throws IOException{
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Sheet2");
+        for (int i = 0; i < data.N; i++){
+            Row row = sheet.createRow(i);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(i);
+            cell = row.createCell(1);
+            cell.setCellValue(solution.cal_Err_Courses_PJ(data, i));
+        }
+        try ( FileOutputStream outputStream = new FileOutputStream("Expectation.xlsx")) {
+            workbook.write(outputStream);
+            outputStream.close();
+        }
     }
     
     public static void writeSolutionAsTimetable(Solution solution, Data data) throws IOException{
@@ -305,6 +317,7 @@ public class GeneticAlgorithmImplementer {
         }
         try ( FileOutputStream outputStream = new FileOutputStream("Schedule.xlsx")) {
             workbook.write(outputStream);
+            outputStream.close();
         }
         
     }
