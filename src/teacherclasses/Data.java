@@ -19,6 +19,26 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class Data {
 
+    public static double MAX_QUALITY_P0;
+    public static double MIN_QUALITY_P0 = 0;
+
+    public static double MAX_SALARY_P0;
+    public static double MIN_SALARY_P0 = 0;
+    
+    public static double MAX_FAVORITE_SUBS_PJ = 43191.16;
+    public static double MIN_FAVORITE_SUBS_PJ = 0;
+    
+    public static double MAX_FAVORITE_SLOTS_PJ = 43191.16;
+    public static double MIN_FAVORITE_SLOTS_PJ = 0;
+    
+    public static double MAX_ERR_COURSES_PJ = 100000;
+    public static double MIN_ERR_COURSES_PJ = 0;
+    
+    public static double MAX_PERIODS_PJ = 100000;
+    public static double MIN_PERIODS_PJ = 0;
+    
+   
+    
     int L; //number of subjects
     int M; //number of courses
     int N; //number of teachers
@@ -125,5 +145,60 @@ public class Data {
 
         return data;
     }
+    
+    public double calc_Max_Quality_P0(){
+        return 10 * this.M;
+    }
+    
+    public double calc_Max_Salary_P0(){
+        double maxSalaryLevel = 0;
+        for (int i = 0; i < this.N; i++){
+            if (maxSalaryLevel <= this.teachers[i].getSalaryLevel()){
+                maxSalaryLevel = this.teachers[i].getSalaryLevel();
+            }
+        }
+        return this.M * maxSalaryLevel;
+    }
+    
+    public double calc_Min_Salary_P0(){
+        double minSalaryLevel = 30;
+        for (int i = 0; i < this.N; i++){
+            if (minSalaryLevel >= this.teachers[i].getSalaryLevel()){
+                minSalaryLevel = this.teachers[i].getSalaryLevel();
+            }
+        }
+        return this.M * (minSalaryLevel - 10) / 2;
+    }
 
+    public double calc_Max_Favourite_Subs(){
+        return this.M * 10;
+    }
+    
+    public double calc_Min_Favourite_Subs(){
+        return 0;
+    }
+    
+    public double calc_Max_Favorite_Slots(){
+        return 10 * this.M;
+    }
+    
+    public double calc_Min_Favorite_Slots(){
+        return 0;
+    }
+    
+    public double calc_Max_Err_Courses(){
+        double sum = 0;
+        for (int i = 0; i < this.N; i++){
+            sum += this.teachers[i].getMaxClass() - this.teachers[i].getMinClass();
+        }
+        return sum;
+    }
+    
+    public double calc_Max_Periods(){
+        return Double.min(this.M - 1, this.N * 15);
+    }
+    
+    public double calc_Min_Periods(){
+        return 0;
+    }
 }
