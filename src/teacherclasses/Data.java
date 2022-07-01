@@ -25,17 +25,17 @@ public class Data {
     public static double MAX_SALARY_P0;
     public static double MIN_SALARY_P0 = 0;
     
-    public static double MAX_FAVORITE_SUBS_PJ = 43191.16;
-    public static double MIN_FAVORITE_SUBS_PJ = 0;
+    public static double[] MAX_FAVORITE_SUBS_PJ;
+    public static double[] MIN_FAVORITE_SUBS_PJ;
     
-    public static double MAX_FAVORITE_SLOTS_PJ = 43191.16;
-    public static double MIN_FAVORITE_SLOTS_PJ = 0;
+    public static double[] MAX_FAVORITE_SLOTS_PJ;
+    public static double[] MIN_FAVORITE_SLOTS_PJ;
     
-    public static double MAX_ERR_COURSES_PJ = 100000;
-    public static double MIN_ERR_COURSES_PJ = 0;
+    public static double[] MAX_ERR_COURSES_PJ;
+    public static double[] MIN_ERR_COURSES_PJ;
     
-    public static double MAX_PERIODS_PJ = 100000;
-    public static double MIN_PERIODS_PJ = 0;
+    public static double[] MAX_PERIODS_PJ;
+    public static double[] MIN_PERIODS_PJ;
     
    
     
@@ -76,6 +76,18 @@ public class Data {
         data.c1=1;
         data.c2 =1;
 
+        MAX_PERIODS_PJ = new double[data.N];
+        MIN_PERIODS_PJ = new double[data.N];
+        
+        MAX_FAVORITE_SLOTS_PJ = new double[data.N];
+        MIN_FAVORITE_SLOTS_PJ = new double[data.N];
+        
+        MAX_FAVORITE_SUBS_PJ = new double[data.N];
+        MAX_FAVORITE_SUBS_PJ = new double[data.N];
+        
+        MAX_ERR_COURSES_PJ = new double[data.N];
+        MIN_ERR_COURSES_PJ = new double[data.N];
+        
         String workingDirectory = System.getProperty("user.dir");
         String excelFilePath = workingDirectory + "//data//data_T.xlsx";
 
@@ -146,14 +158,12 @@ public class Data {
         MAX_QUALITY_P0 = data.calc_Max_Quality_P0();
         MAX_SALARY_P0 = data.calc_Max_Salary_P0();
         MIN_SALARY_P0 = data.calc_Min_Salary_P0();
-        MAX_FAVORITE_SUBS_PJ = data.calc_Max_Favourite_Subs();
-        MAX_FAVORITE_SLOTS_PJ = data.calc_Max_Favorite_Slots();
-        MAX_ERR_COURSES_PJ = data.calc_Max_Err_Courses();
-        MAX_PERIODS_PJ = data.calc_Max_Periods();
-        MIN_FAVORITE_SUBS_PJ = data.calc_Min_Favourite_Subs();
-        MIN_FAVORITE_SLOTS_PJ = data.calc_Min_Favorite_Slots();
-        MIN_PERIODS_PJ = data.calc_Min_Periods();
-        
+        for (int i = 0; i< data.N; i++){
+            MAX_FAVORITE_SUBS_PJ[i] = data.calc_Max_Favourite_Subs(i);
+            MAX_FAVORITE_SLOTS_PJ[i] = data.calc_Max_Favorite_Slots(i);
+            MAX_PERIODS_PJ[i] = data.calc_Max_Periods(i);
+            MAX_ERR_COURSES_PJ[i] = data.calc_Max_Err_Courses(i);
+        }
         return data;
     }
     
@@ -181,35 +191,31 @@ public class Data {
         return this.M * minSalaryLevel;
     }
 
-    public double calc_Max_Favourite_Subs(){
-        return this.M * 10;
+    public double calc_Max_Favourite_Subs(int teacher){
+        return 10 * this.teachers[teacher].getMaxClass();
     }
     
-    public double calc_Min_Favourite_Subs(){
+    public double calc_Min_Favourite_Subs(int teacher){
         return 0;
     }
     
-    public double calc_Max_Favorite_Slots(){
-        return 10 * this.M;
+    public double calc_Max_Favorite_Slots(int teacher){
+        return 10 * this.teachers[teacher].getMaxClass();
     }
     
-    public double calc_Min_Favorite_Slots(){
+    public double calc_Min_Favorite_Slots(int teacher){
         return 0;
     }
     
-    public double calc_Max_Err_Courses(){
-        double sum = 0;
-        for (int i = 0; i < this.N; i++){
-            sum += this.teachers[i].getMaxClass() - this.teachers[i].getMinClass();
-        }
-        return sum;
+    public double calc_Max_Err_Courses(int teacher){
+        return this.teachers[teacher].getMaxClass() - this.teachers[teacher].getMinClass();
     }
     
-    public double calc_Max_Periods(){
-        return Double.min(this.M - 1, this.N * 15);
+    public double calc_Max_Periods(int teacher){
+        return 13;
     }
     
-    public double calc_Min_Periods(){
+    public double calc_Min_Periods(int teacher){
         return 0;
     }
 }
