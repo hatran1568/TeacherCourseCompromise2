@@ -30,7 +30,7 @@ public class TeacherClasses {
             System.out.println(solution.self_Rating_Constraint);
             System.out.println(solution.slot_Rating_Constraint);
 
-            System.out.println(solution.sum);
+            
             System.out.println(solution.cal_Fitness(data));
         }
         GeneticAlgorithmImplementer.writeSolutionAsTimetable(result.get(result.size()-1), data);

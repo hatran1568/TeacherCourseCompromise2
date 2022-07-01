@@ -143,6 +143,17 @@ public class Data {
             data.courses[i - 1] = c;
         }
 
+        MAX_QUALITY_P0 = data.calc_Max_Quality_P0();
+        MAX_SALARY_P0 = data.calc_Max_Salary_P0();
+        MIN_SALARY_P0 = data.calc_Min_Salary_P0();
+        MAX_FAVORITE_SUBS_PJ = data.calc_Max_Favourite_Subs();
+        MAX_FAVORITE_SLOTS_PJ = data.calc_Max_Favorite_Slots();
+        MAX_ERR_COURSES_PJ = data.calc_Max_Err_Courses();
+        MAX_PERIODS_PJ = data.calc_Max_Periods();
+        MIN_FAVORITE_SUBS_PJ = data.calc_Min_Favourite_Subs();
+        MIN_FAVORITE_SLOTS_PJ = data.calc_Min_Favorite_Slots();
+        MIN_PERIODS_PJ = data.calc_Min_Periods();
+        
         return data;
     }
     
@@ -167,7 +178,7 @@ public class Data {
                 minSalaryLevel = this.teachers[i].getSalaryLevel();
             }
         }
-        return this.M * (minSalaryLevel - 10) / 2;
+        return this.M * minSalaryLevel;
     }
 
     public double calc_Max_Favourite_Subs(){

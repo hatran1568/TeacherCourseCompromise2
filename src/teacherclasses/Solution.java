@@ -22,9 +22,9 @@ public class Solution {
     public boolean student_Rating_Constraint;
     public boolean self_Rating_Constraint;
     public boolean slot_Rating_Constraint;
-    
+
     public ArrayList<Integer> sum = new ArrayList<>();
-    
+
     public int[][] getChromosome() {
         return chromosome;
     }
@@ -84,12 +84,36 @@ public class Solution {
         return favourite_Subs;
     }
 
+    public double cal_Favourite_Subs_All_PJ(Data data) {
+        double favourite_Subs = 0;
+        for (int i = 0; i < data.N; i++) {
+            favourite_Subs += cal_Favourite_Subs_PJ(data, i);
+        }
+        return favourite_Subs;
+    }
+
+    public double cal_Favourite_Slots_All_PJ(Data data) {
+        double favoriteSlots = 0;
+        for (int i = 0; i < data.N; i++) {
+            favoriteSlots += cal_Favourite_Slots_PJ(data, i);
+        }
+        return favoriteSlots;
+    }
+
     public double cal_Favourite_Slots_PJ(Data data, int teacher) {
         double favourite_Slots = 0;
         for (int i = 0; i < data.M; i++) {
             favourite_Slots += chromosome[i][teacher] * data.FSlot[teacher][i];
         }
         return favourite_Slots;
+    }
+
+    public double cal_Err_Courses_All_PJ(Data data) {
+        double errCourses = 0;
+        for (int i = 0; i < data.N; i++) {
+            errCourses += cal_Err_Courses_PJ(data, i);
+        }
+        return errCourses;
     }
 
     public double cal_Err_Courses_PJ(Data data, int teacher) {
@@ -99,6 +123,14 @@ public class Solution {
         }
         Err_Courses = data.teachers[teacher].getIdealClass() - Err_Courses;
         return Math.abs(Err_Courses);
+    }
+
+    public double cal_Periods_All_PJ(Data data) {
+        double periods = 0;
+        for (int i = 0; i < data.N; i++) {
+            periods += cal_Periods_PJ(data, i);
+        }
+        return periods;
     }
 
     public double cal_Periods_PJ(Data data, int teacher) {
@@ -135,13 +167,21 @@ public class Solution {
     }
 
     public double cal_Fitness(Data data) {
-        if (check_Solution(data) == false) {
-            return ( data.c1 * cal_Payoff_P0(data) + data.c2 * cal_Payoff_All_PJ(data) )* 10000;
+        double fitness = 0;
+        fitness += data.w1 * Math.pow(((cal_Salary_P0(data)-Data.MIN_SALARY_P0)/(Data.MAX_SALARY_P0-Data.MIN_SALARY_P0)),2); 
+        fitness += data.w2 * Math.pow(((Data.MAX_QUALITY_P0-cal_Quality_P0(data))/(Data.MAX_QUALITY_P0-Data.MIN_QUALITY_P0)),2);
+        fitness += data.w3 * Math.pow(((Data.MAX_FAVORITE_SUBS_PJ-cal_Favourite_Subs_All_PJ(data))/(Data.MIN_FAVORITE_SUBS_PJ-Data.MAX_FAVORITE_SUBS_PJ)),2);
+        fitness += data.w4 * Math.pow(((Data.MAX_FAVORITE_SLOTS_PJ-cal_Favourite_Slots_All_PJ(data))/(Data.MAX_FAVORITE_SLOTS_PJ-Data.MIN_FAVORITE_SLOTS_PJ)),2);
+        fitness += data.w5 * Math.pow(((cal_Err_Courses_All_PJ(data)-Data.MIN_ERR_COURSES_PJ)/(Data.MIN_ERR_COURSES_PJ-Data.MAX_ERR_COURSES_PJ)),2);
+        fitness += data.w6 * Math.pow(((Data.MIN_PERIODS_PJ-cal_Periods_All_PJ(data))/(Data.MAX_PERIODS_PJ-Data.MIN_PERIODS_PJ)), 2);
+        fitness = Math.sqrt(fitness);
+        if(check_Solution(data)==false){
+            fitness = fitness * 10000;
         }
-        return data.c1 * cal_Payoff_P0(data) + data.c2 * cal_Payoff_All_PJ(data);
+        return fitness;
     }
 
-    public boolean checkAllCourseConstraint(Data data){
+    public boolean checkAllCourseConstraint(Data data) {
         int sumSlot = 0;
         for (int i = 0; i < data.M; i++) {
             for (int j = 0; j < data.N; j++) {
@@ -156,8 +196,8 @@ public class Solution {
         }
         return false;
     }
-    
-    public boolean checkSingleTeacherCourseConstraint(Data data){
+
+    public boolean checkSingleTeacherCourseConstraint(Data data) {
         for (int i = 0; i < data.M; i++) {
             int sum2 = 0;
             for (int j = 0; j < data.N; j++) {
@@ -165,15 +205,15 @@ public class Solution {
             }
             if (sum2 != 1) {
                 //System.out.println("courses have 2 teacher");
-                single_Teacher_Courses_Contraints=false;
+                single_Teacher_Courses_Contraints = false;
                 return false;
             }
             sum2 = 0;
         }
         return true;
     }
-    
-    public boolean checkSingleSlotConstraint(Data data){
+
+    public boolean checkSingleSlotConstraint(Data data) {
         for (int i = 0; i < data.N; i++) {
             ArrayList<Integer> list = new ArrayList<>();
             for (int j = 0; j < data.M; j++) {
@@ -183,7 +223,7 @@ public class Solution {
             }
             Collections.sort(list);
 
-            for (int k = 1; k< list.size(); k++) {
+            for (int k = 1; k < list.size(); k++) {
                 if (list.get(k) == list.get(k - 1)) {
                     //System.out.println("teacher have 2 slot at same time");
                     single_Slot_Contraints = false;
@@ -194,13 +234,14 @@ public class Solution {
         }
         return true;
     }
-    
-    public boolean checkInRangeSlotConstraint(Data data){
+
+    public boolean checkInRangeSlotConstraint(Data data) {
         for (int i = 0; i < data.N; i++) {
             int sum3 = 0;
             for (int j = 0; j < data.M; j++) {
-                if (chromosome[j][i] == 1)
+                if (chromosome[j][i] == 1) {
                     sum3 += chromosome[j][i];
+                }
             }
             sum.add(sum3);
             if (sum3 > data.teachers[i].getMaxClass() || sum3 < data.teachers[i].getMinClass()) {
@@ -212,12 +253,11 @@ public class Solution {
         }
         return true;
     }
-    
-    
-    public boolean checkStudentRatingConstraint(Data data){
-        for (int i = 0; i < data.M; i++){
-            for (int j =0; j < data.N; j++){
-                if (chromosome[i][j] == 1 && data.Rating[j][data.courses[i].getSubject()] < 1){
+
+    public boolean checkStudentRatingConstraint(Data data) {
+        for (int i = 0; i < data.M; i++) {
+            for (int j = 0; j < data.N; j++) {
+                if (chromosome[i][j] == 1 && data.Rating[j][data.courses[i].getSubject()] < 1) {
                     student_Rating_Constraint = false;
                     return false;
                 }
@@ -225,31 +265,31 @@ public class Solution {
         }
         return true;
     }
-    
-    public boolean checkSelfRatingConstaint(Data data){
-        for (int i = 0; i < data.M; i++){
-            for (int j =0; j < data.N; j++){
-                if (chromosome[i][j] == 1 && data.FSub[j][data.courses[i].getSubject()] < 1){
+
+    public boolean checkSelfRatingConstaint(Data data) {
+        for (int i = 0; i < data.M; i++) {
+            for (int j = 0; j < data.N; j++) {
+                if (chromosome[i][j] == 1 && data.FSub[j][data.courses[i].getSubject()] < 1) {
                     self_Rating_Constraint = false;
                     return false;
                 }
             }
-        }    
+        }
         return true;
     }
-    
-    public boolean checkSlotRatingConstraint(Data data){
-        for (int i = 0; i < data.M; i++){
-            for (int j =0; j < data.N; j++){
-                if (chromosome[i][j] == 1 && data.FSlot[j][data.courses[i].getSlot()] < 1){
+
+    public boolean checkSlotRatingConstraint(Data data) {
+        for (int i = 0; i < data.M; i++) {
+            for (int j = 0; j < data.N; j++) {
+                if (chromosome[i][j] == 1 && data.FSlot[j][data.courses[i].getSlot()] < 1) {
                     slot_Rating_Constraint = false;
                     return false;
                 }
             }
-        }    
+        }
         return true;
     }
-    
+
     public boolean check_Solution(Data data) {
         checkAllCourseConstraint(data);
         checkInRangeSlotConstraint(data);
@@ -258,10 +298,10 @@ public class Solution {
         checkSingleTeacherCourseConstraint(data);
         checkSlotRatingConstraint(data);
         checkStudentRatingConstraint(data);
-        return checkAllCourseConstraint(data) && checkInRangeSlotConstraint(data) && 
-                checkSingleSlotConstraint(data) && checkSingleTeacherCourseConstraint(data) && 
-                checkStudentRatingConstraint(data) && checkSelfRatingConstaint(data) && 
-                checkSlotRatingConstraint(data);
+        return checkAllCourseConstraint(data) && checkInRangeSlotConstraint(data)
+                && checkSingleSlotConstraint(data) && checkSingleTeacherCourseConstraint(data)
+                && checkStudentRatingConstraint(data) && checkSelfRatingConstaint(data)
+                && checkSlotRatingConstraint(data);
     }
 
 }
