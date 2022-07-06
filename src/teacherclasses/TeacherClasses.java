@@ -20,15 +20,16 @@ public class TeacherClasses {
         // TODO code application logic here
         Data data = Data.readDataFromFile();
         GeneticAlgorithmImplementer Ga = new GeneticAlgorithmImplementer(data);
-        ArrayList<Solution> result = Ga.implementGA();
+        ArrayList<Solution> result = Ga.Search();
         for (Solution solution : result) {
-            System.out.println(solution.all_Courses_Contraints);
-            System.out.println(solution.single_Teacher_Courses_Contraints);
-            System.out.println(solution.single_Slot_Contraints);
-            System.out.println(solution.inRange_Slot_Contraints);
-            System.out.println(solution.student_Rating_Constraint);
-            System.out.println(solution.self_Rating_Constraint);
-            System.out.println(solution.slot_Rating_Constraint);
+            System.out.println(solution.checkAllCourseConstraint(data));
+            System.out.println(solution.checkInRangeSlotConstraint(data));
+            System.out.println(solution.checkSelfRatingConstaint(data));
+            System.out.println(solution.checkSingleSlotConstraint(data));
+            System.out.println(solution.checkSingleTeacherCourseConstraint(data));
+            System.out.println(solution.checkSlotRatingConstraint(data));
+            System.out.println(solution.checkStudentRatingConstraint(data));
+            System.out.println(solution.check_Solution(data));
 
             
             System.out.println(solution.cal_Fitness(data));

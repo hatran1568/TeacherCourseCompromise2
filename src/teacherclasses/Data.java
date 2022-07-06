@@ -83,7 +83,7 @@ public class Data {
         MIN_FAVORITE_SLOTS_PJ = new double[data.N];
         
         MAX_FAVORITE_SUBS_PJ = new double[data.N];
-        MAX_FAVORITE_SUBS_PJ = new double[data.N];
+        MIN_FAVORITE_SUBS_PJ = new double[data.N];
         
         MAX_ERR_COURSES_PJ = new double[data.N];
         MIN_ERR_COURSES_PJ = new double[data.N];
@@ -163,6 +163,11 @@ public class Data {
             MAX_FAVORITE_SLOTS_PJ[i] = data.calc_Max_Favorite_Slots(i);
             MAX_PERIODS_PJ[i] = data.calc_Max_Periods(i);
             MAX_ERR_COURSES_PJ[i] = data.calc_Max_Err_Courses(i);
+            MIN_FAVORITE_SUBS_PJ[i] = data.calc_Min_Favourite_Subs(i);
+            MIN_FAVORITE_SLOTS_PJ[i] = data.calc_Min_Favorite_Slots(i);
+            MIN_PERIODS_PJ[i] = data.calc_Min_Periods(i);
+            MIN_ERR_COURSES_PJ[i] = 0;
+
         }
         return data;
     }

@@ -13,6 +13,12 @@ import java.util.Collections;
  */
 public class Solution {
 
+    public int rank;
+    public int domination_count;
+    public ArrayList<Solution> dominated_solution;
+    public int[] features;
+    public double crowding_distance = 0;
+    public double[] objectives;
     public int chromosome[][];
     public Data data;
     public boolean all_Courses_Contraints;
@@ -168,14 +174,17 @@ public class Solution {
 
     public double cal_Fitness(Data data) {
         double fitness = 0;
-        fitness += data.w1 * Math.pow(((cal_Salary_P0(data)-Data.MIN_SALARY_P0)/(Data.MAX_SALARY_P0-Data.MIN_SALARY_P0)),2); 
-        fitness += data.w2 * Math.pow(((Data.MAX_QUALITY_P0-cal_Quality_P0(data))/(Data.MAX_QUALITY_P0-Data.MIN_QUALITY_P0)),2);
-        fitness += data.w3 * Math.pow(((Data.MAX_FAVORITE_SUBS_PJ-cal_Favourite_Subs_All_PJ(data))/(Data.MIN_FAVORITE_SUBS_PJ-Data.MAX_FAVORITE_SUBS_PJ)),2);
-        fitness += data.w4 * Math.pow(((Data.MAX_FAVORITE_SLOTS_PJ-cal_Favourite_Slots_All_PJ(data))/(Data.MAX_FAVORITE_SLOTS_PJ-Data.MIN_FAVORITE_SLOTS_PJ)),2);
-        fitness += data.w5 * Math.pow(((cal_Err_Courses_All_PJ(data)-Data.MIN_ERR_COURSES_PJ)/(Data.MIN_ERR_COURSES_PJ-Data.MAX_ERR_COURSES_PJ)),2);
-        fitness += data.w6 * Math.pow(((Data.MIN_PERIODS_PJ-cal_Periods_All_PJ(data))/(Data.MAX_PERIODS_PJ-Data.MIN_PERIODS_PJ)), 2);
+        fitness += data.w1 * Math.pow(((cal_Salary_P0(data) - Data.MIN_SALARY_P0) / (Data.MAX_SALARY_P0 - Data.MIN_SALARY_P0)), 2);
+        fitness += data.w2 * Math.pow(((Data.MAX_QUALITY_P0 - cal_Quality_P0(data)) / (Data.MAX_QUALITY_P0 - Data.MIN_QUALITY_P0)), 2);
+        for (int i = 0; i < data.N; i++) {
+            fitness += data.w3 * Math.pow(((Data.MAX_FAVORITE_SUBS_PJ[i] - cal_Favourite_Subs_PJ(data, i)) / (Data.MIN_FAVORITE_SUBS_PJ[i] - Data.MAX_FAVORITE_SUBS_PJ[i])), 2);
+            fitness += data.w4 * Math.pow(((Data.MAX_FAVORITE_SLOTS_PJ[i] - cal_Favourite_Slots_PJ(data, i)) / (Data.MAX_FAVORITE_SLOTS_PJ[i] - Data.MIN_FAVORITE_SLOTS_PJ[i])), 2);
+            fitness += data.w5 * Math.pow(((cal_Err_Courses_PJ(data, i) - Data.MIN_ERR_COURSES_PJ[i]) / (Data.MIN_ERR_COURSES_PJ[i] - Data.MAX_ERR_COURSES_PJ[i])), 2);
+            fitness += data.w6 * Math.pow(((Data.MIN_PERIODS_PJ[i] - cal_Periods_PJ(data, i)) / (Data.MAX_PERIODS_PJ[i] - Data.MIN_PERIODS_PJ[i])), 2);
+        }
+
         fitness = Math.sqrt(fitness);
-        if(check_Solution(data)==false){
+        if (check_Solution(data) == false) {
             fitness = fitness * 10000;
         }
         return fitness;
@@ -194,6 +203,7 @@ public class Solution {
             all_Courses_Contraints = true;
             return true;
         }
+        all_Courses_Contraints=false;
         return false;
     }
 
@@ -288,6 +298,32 @@ public class Solution {
             }
         }
         return true;
+    }
+
+    public boolean dominates(Object o) {
+
+        if (!(o instanceof Solution)) {
+            return false;
+        }
+
+        Solution other = (Solution) o;
+        boolean and_condition = true;
+        boolean or_condition = false;
+        for (int i = 0; i < data.N; i++) {
+            and_condition = and_condition && (this.cal_Err_Courses_PJ(data, i) <= other.cal_Err_Courses_PJ(data, i));
+            or_condition = or_condition || (this.cal_Err_Courses_PJ(data, i) < other.cal_Err_Courses_PJ(data, i));
+            and_condition = and_condition && (this.cal_Favourite_Slots_PJ(data, i) >= other.cal_Favourite_Slots_PJ(data, i));
+            or_condition = or_condition || (this.cal_Favourite_Slots_PJ(data, i) > other.cal_Favourite_Slots_PJ(data, i));
+            and_condition = and_condition && (this.cal_Favourite_Subs_PJ(data, i) >= other.cal_Favourite_Subs_PJ(data, i));
+            or_condition = or_condition || (this.cal_Favourite_Subs_PJ(data, i) > other.cal_Favourite_Subs_PJ(data, i));
+            and_condition = and_condition && (this.cal_Periods_PJ(data, i) <= other.cal_Periods_PJ(data, i));
+            or_condition = or_condition || (this.cal_Periods_PJ(data, i) < other.cal_Periods_PJ(data, i));
+        }
+        and_condition = and_condition && (this.cal_Quality_P0(data) >= other.cal_Quality_P0(data));
+        or_condition = or_condition || (this.cal_Quality_P0(data) > other.cal_Quality_P0(data));
+        and_condition = and_condition && (this.cal_Salary_P0(data) <= other.cal_Salary_P0(data));
+        or_condition = or_condition || (this.cal_Salary_P0(data) < other.cal_Salary_P0(data));
+        return (and_condition && or_condition);
     }
 
     public boolean check_Solution(Data data) {
