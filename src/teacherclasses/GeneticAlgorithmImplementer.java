@@ -4,6 +4,7 @@
  */
 package teacherclasses;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -182,7 +183,7 @@ public class GeneticAlgorithmImplementer {
         ArrayList<Solution> result = new ArrayList<>();
         ArrayList<Solution> current_generation = new ArrayList<>();
         ArrayList<Solution> next_generation = new ArrayList<>();
-        int maximum = 500;
+        int maximum = 400;
         int minimum = 0;
         int mutation_minimum = 25;
         int range = maximum - minimum;
@@ -191,7 +192,7 @@ public class GeneticAlgorithmImplementer {
 
         int randomNum2;
         //Generate 1st gen
-        for (int i = 0; i <20; i++) {
+        for (int i = 0; i <400; i++) {
             current_generation.add(generateSolution());
         }
 
@@ -205,13 +206,13 @@ public class GeneticAlgorithmImplementer {
         });
 
         result.add(current_generation.get(0));
-        for (int j = 0; j < 500; j++) {
+        for (int j = 0; j < 300; j++) {
             //Selection
             for (int i = 0; i < 50; i++) {
                 next_generation.add(current_generation.get(i));
             }
             //Crossover
-            for (int i = 0; i < 450; i++) {
+            for (int i = 0; i < 350; i++) {
                 randomNum = rn.nextInt(range) + minimum;
                 do {
                     randomNum2 = rn.nextInt(range) + minimum;
@@ -219,7 +220,7 @@ public class GeneticAlgorithmImplementer {
                 next_generation.add(Crossover(current_generation.get(randomNum), current_generation.get(randomNum2)));
             }
             //mutation
-            for (int i = 0; i < 50; i++) {
+            for (int i = 0; i < 40; i++) {
                 randomNum = rn.nextInt(range - 25) + mutation_minimum;
                 next_generation.set(randomNum, Mutate(next_generation.get(randomNum)));
                 randomNum = rn.nextInt(range - 25) + mutation_minimum;
@@ -250,6 +251,24 @@ public class GeneticAlgorithmImplementer {
         Cell cell = row.createCell(0);
         cell.setCellValue("Fitness");
 
+        cell = row.createCell(1);
+        cell.setCellValue("Quality P0");
+        
+        cell = row.createCell(2);
+        cell.setCellValue("Salary P0");
+        
+        cell = row.createCell(3);
+        cell.setCellValue("Favorite subs");
+        
+        cell = row.createCell(4);
+        cell.setCellValue("Favorite slots");
+        
+        cell = row.createCell(5);
+        cell.setCellValue("Periods");
+        
+        cell = row.createCell(6);
+        cell.setCellValue("Err courses");
+        
         int rowCount = 0;
 
         for (Solution s : solutions) {
@@ -257,6 +276,23 @@ public class GeneticAlgorithmImplementer {
             cell = row.createCell(0);
             cell.setCellValue(s.cal_Fitness(data));
 
+            cell = row.createCell(1);
+            cell.setCellValue(s.cal_Quality_P0(data));
+
+            cell = row.createCell(2);
+            cell.setCellValue(s.cal_Salary_P0(data));
+            
+            cell = row.createCell(3);
+            cell.setCellValue(s.cal_Favourite_Subs_All_PJ(data));
+            
+            cell = row.createCell(4);
+            cell.setCellValue(s.cal_Favourite_Slots_All_PJ(data));
+            
+            cell = row.createCell(5);
+            cell.setCellValue(s.cal_Periods_All_PJ(data));
+            
+            cell = row.createCell(6);
+            cell.setCellValue(s.cal_Err_Courses_All_PJ(data));
         }
         try (FileOutputStream outputStream = new FileOutputStream("Fitness.xlsx")) {
             workbook.write(outputStream);
@@ -399,5 +435,44 @@ public class GeneticAlgorithmImplementer {
             outputStream.close();
         }
 
+    }
+    
+    public static void addResult(Solution s, Data data) throws IOException{
+               FileInputStream myxls = new FileInputStream("Result.xlsx");
+
+        XSSFWorkbook workbook = new XSSFWorkbook(myxls);
+        XSSFSheet sheet = workbook.getSheetAt(0);
+               int lastRow=sheet.getLastRowNum();
+       Row row = sheet.createRow(++lastRow);
+
+        Cell cell;
+
+        
+            cell = row.createCell(0);
+            cell.setCellValue(s.cal_Fitness(data));
+
+            cell = row.createCell(1);
+            cell.setCellValue(s.cal_Quality_P0(data));
+
+            cell = row.createCell(2);
+            cell.setCellValue(s.cal_Salary_P0(data));
+            
+            cell = row.createCell(3);
+            cell.setCellValue(s.cal_Favourite_Subs_All_PJ(data));
+            
+            cell = row.createCell(4);
+            cell.setCellValue(s.cal_Favourite_Slots_All_PJ(data));
+            
+            cell = row.createCell(5);
+            cell.setCellValue(s.cal_Periods_All_PJ(data));
+            
+            cell = row.createCell(6);
+            cell.setCellValue(s.cal_Err_Courses_All_PJ(data));
+            
+        
+        try ( FileOutputStream outputStream = new FileOutputStream("Result.xlsx")) {
+            workbook.write(outputStream);
+            outputStream.close();
+        }
     }
 }

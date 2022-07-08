@@ -85,7 +85,7 @@ public class Solution {
     public double cal_Favourite_Subs_PJ(Data data, int teacher) {
         double favourite_Subs = 0;
         for (int i = 0; i < data.M; i++) {
-            favourite_Subs += chromosome[i][teacher] * data.FSub[teacher][i];
+            favourite_Subs += chromosome[i][teacher] * data.FSub[teacher][data.courses[i].getSubject()];
         }
         return favourite_Subs;
     }
@@ -109,7 +109,7 @@ public class Solution {
     public double cal_Favourite_Slots_PJ(Data data, int teacher) {
         double favourite_Slots = 0;
         for (int i = 0; i < data.M; i++) {
-            favourite_Slots += chromosome[i][teacher] * data.FSlot[teacher][i];
+            favourite_Slots += chromosome[i][teacher] * data.FSlot[teacher][data.courses[i].getSlot()];
         }
         return favourite_Slots;
     }
@@ -235,6 +235,7 @@ public class Solution {
 
             for (int k = 1; k < list.size(); k++) {
                 if (list.get(k) == list.get(k - 1)) {
+              //      System.out.println(list.get(k));
                     //System.out.println("teacher have 2 slot at same time");
                     single_Slot_Contraints = false;
                     return false;
@@ -280,6 +281,7 @@ public class Solution {
         for (int i = 0; i < data.M; i++) {
             for (int j = 0; j < data.N; j++) {
                 if (chromosome[i][j] == 1 && data.FSub[j][data.courses[i].getSubject()] < 1) {
+    //                System.out.println("Self rating: " + j + "-" + data.courses[i].getSubject());
                     self_Rating_Constraint = false;
                     return false;
                 }

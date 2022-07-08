@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Random;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -63,18 +64,20 @@ public class Data {
 
     public static Data readDataFromFile() throws FileNotFoundException, IOException {
         Data data = new Data();
+        Random rand = new Random();
+
         data.L = 13;
         data.M = 153;
         data.N = 25;
         data.T = 10;
-        data.w1 = 1;
-        data.w2 = 1;
-        data.w3 = 1;
-        data.w4 = 1;
-        data.w5 = 1;
-        data.w6 = 1;
-        data.c1=1;
-        data.c2 =1;
+        data.w1 = (double)rand.nextInt(10) + 1;
+        data.w2 = (double)rand.nextInt(10) + 1;
+        data.w3 = (double)rand.nextInt(10) + 1;
+        data.w4 = (double)rand.nextInt(10) + 1;
+        data.w5 = (double)rand.nextInt(10) + 1;
+        data.w6 = (double)rand.nextInt(10) + 1;
+        data.c1=(double)rand.nextInt(10) + 1;
+        data.c2 =(double)rand.nextInt(10) + 1;
 
         MAX_PERIODS_PJ = new double[data.N];
         MIN_PERIODS_PJ = new double[data.N];
